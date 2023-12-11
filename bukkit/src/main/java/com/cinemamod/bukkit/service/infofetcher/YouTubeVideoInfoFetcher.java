@@ -9,6 +9,7 @@ import com.google.gson.JsonParser;
 
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.CompletableFuture;
@@ -44,7 +45,7 @@ public class YouTubeVideoInfoFetcher extends VideoInfoFetcher {
                 String urlString = String.format(PIPED_FETCH_URL_FORMAT, youtubeVideoId);
                 URL url = new URL(urlString);
 
-                try (InputStreamReader reader = new InputStreamReader(url.openStream())) {
+                try (InputStreamReader reader = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8)) {
                     JsonObject root = JSON_PARSER.parse(reader).getAsJsonObject();
                     return new VideoInfo(VideoServiceType.YOUTUBE,
                             youtubeVideoId,

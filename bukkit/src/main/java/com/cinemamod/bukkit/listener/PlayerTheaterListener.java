@@ -24,9 +24,11 @@ public class PlayerTheaterListener implements Listener {
         Player player = event.getPlayer();
         Theater theater = event.getTheater();
 
-        if (!(theater instanceof StaticTheater)) {
-            ChatUtil.showPlaying(player, theater, false);
-            theater.showBossBars(cinemaModPlugin, player);
+        if (cinemaModPlugin.getCinemaModConfig().isBossBarsShow) {
+            if (!(theater instanceof StaticTheater)) {
+                ChatUtil.showPlaying(player, theater, false);
+                theater.showBossBars(cinemaModPlugin, player);
+            }
         }
     }
 

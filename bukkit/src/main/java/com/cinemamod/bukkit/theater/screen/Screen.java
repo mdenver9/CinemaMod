@@ -87,4 +87,12 @@ public class Screen implements PacketByteBufSerializable<Screen> {
         buf.writeBoolean(muted);
     }
 
+    public void fromCommand(int x, int y, int z, String facing, float width, float height) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.facing = facing;
+        this.width = width;
+        this.height = height;
+    }
 }

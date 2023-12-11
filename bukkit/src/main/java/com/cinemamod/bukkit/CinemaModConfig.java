@@ -3,7 +3,7 @@ package com.cinemamod.bukkit;
 public class CinemaModConfig {
 
     public String youtubeDataApiKey = "abc123";
-    public boolean enableTabTheaterList = true;
+    public boolean enableTabTheaterList = false;
 
     /*
      * Storage
@@ -17,5 +17,7 @@ public class CinemaModConfig {
     public boolean useSqlite = true;
 
     public boolean autogenCubicRegions = false;
+    public boolean isDownVote = true;
+    public boolean isBossBarsShow = true;
 
 }

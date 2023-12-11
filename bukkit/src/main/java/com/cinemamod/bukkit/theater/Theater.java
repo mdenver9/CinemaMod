@@ -2,6 +2,7 @@ package com.cinemamod.bukkit.theater;
 
 import com.cinemamod.bukkit.CinemaModPlugin;
 import com.cinemamod.bukkit.event.*;
+import com.cinemamod.bukkit.listener.PlayerJoinQuitListener;
 import com.cinemamod.bukkit.video.VideoInfo;
 import com.cinemamod.bukkit.theater.screen.PreviewScreen;
 import com.cinemamod.bukkit.theater.screen.Screen;
@@ -10,9 +11,6 @@ import com.cinemamod.bukkit.util.NetworkUtil;
 import com.cinemamod.bukkit.util.WorldGuardUtil;
 import com.cinemamod.bukkit.video.Video;
 import com.cinemamod.bukkit.video.queue.VideoQueue;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -34,13 +32,13 @@ public abstract class Theater {
     private final List<PreviewScreen> previewScreens;
     private transient Video playing;
     private final transient VideoQueue videoQueue;
-    private final transient List<ProtectedRegion> regions;
+    private final transient List<TheaterRegion> regions;
     private transient Set<Player> viewers;
     private final transient Set<Player> voteSkips;
     private transient BossBar titleBossBar;
     private transient BossBar timelineBossBar;
 
-    public Theater(CinemaModPlugin cinemaModPlugin, String id, String name, boolean hidden, Screen screen) {
+    public Theater(CinemaModPlugin cinemaModPlugin, String id, String name, boolean hidden, Screen screen, TheaterRegion theaterRegion) {
         this.cinemaModPlugin = cinemaModPlugin;
         this.id = id;
         this.name = name;
@@ -49,7 +47,10 @@ public abstract class Theater {
         previewScreens = new ArrayList<>();
 
         videoQueue = new VideoQueue(cinemaModPlugin, this);
-        regions = WorldGuardUtil.guessTheaterRegions(this);
+        regions = new ArrayList<>();
+        regions.add(theaterRegion);
+
+        /*regions = WorldGuardUtil.guessTheaterRegions(this);
 
         if (regions.isEmpty() && this.cinemaModPlugin.getCinemaModConfig().autogenCubicRegions) {
             Location screenLoc = this.getScreen().getLocation();
@@ -64,7 +65,7 @@ public abstract class Theater {
 
         if (regions.isEmpty()) {
             cinemaModPlugin.getLogger().info("Theater '" + id + "' has no WorldGuard region");
-        }
+        }*/
 
         viewers = new HashSet<>();
         voteSkips = new HashSet<>();
@@ -127,14 +128,14 @@ public abstract class Theater {
         return videoQueue;
     }
 
-    public List<ProtectedRegion> getRegions() {
+    public List<TheaterRegion> getRegions() {
         return regions;
     }
 
     public boolean regionsContain(Location location) {
         // TODO: also check world?
-        for (ProtectedRegion region : regions) {
-            if (region.contains(location.getBlockX(), location.getBlockY(), location.getBlockZ())) {
+        for (TheaterRegion region : regions) {
+            if (region.contains(location)) {
                 return true;
             }
         }
@@ -169,7 +170,10 @@ public abstract class Theater {
         Set<Player> previousViewers = getViewers();
         Set<Player> newViewers = new HashSet<>();
 
-        for (ProtectedRegion region : regions) {
+        /*for (ProtectedRegion region : regions) {
+            newViewers.addAll(WorldGuardUtil.getPlayersInRegion(region));
+        }*/
+        for (TheaterRegion region : regions) {
             newViewers.addAll(WorldGuardUtil.getPlayersInRegion(region));
         }
 

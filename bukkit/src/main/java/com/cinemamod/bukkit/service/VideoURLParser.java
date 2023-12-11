@@ -27,7 +27,6 @@ public class VideoURLParser {
 
     public void parse(Player player) {
         if (parsed) return;
-
         parsed = true;
 
         String youtubeVideoId = getLink(url,
@@ -50,11 +49,15 @@ public class VideoURLParser {
             return;
         }
 
-        String mediaLink = getLink(url, "^https?:\\/\\/[\\W\\w\\-]+(\\.[\\W\\w\\-]+)*\\/[\\W\\w\\-]+\\.(mp[3-4]|ts|ogg|opus|webm|m4v)(.*)?$", 0);
-        if (mediaLink != null) {
-            infoFetcher = new FileVideoInfoFetcher("cinemamod.request.file", url, player == null ? "server" : player.getName());
+        if (this.url.endsWith(".mp4") || this.url.endsWith(".webm") || this.url.endsWith("m4v")) {
+            this.infoFetcher = new FileVideoInfoFetcher("cinemamod.request.file", this.url, player == null ? "server" : player.getName());
             return;
         }
+        //String mediaLink = getLink(url, "^https?:\\/\\/[\\W\\w\\-]+(\\.[\\W\\w\\-]+)*\\/[\\W\\w\\-]+\\.(mp[3-4]|ts|ogg|opus|webm|m4v)(.*)?$", 0);
+        //if (mediaLink != null) {
+        //    infoFetcher = new FileVideoInfoFetcher("cinemamod.request.file", url, player == null ? "server" : player.getName());
+        //    return;
+        //}
 
     }
     private static String getLink(String url, String regex, int group) {

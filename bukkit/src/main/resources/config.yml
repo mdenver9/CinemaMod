@@ -2,7 +2,14 @@
 # Get one from Google Cloud Console
 youtube-data-api-key: abc123
 
-enable-tab-theater-list: true
+#Отображать инфу в табе (нерекомендуется)
+enable-tab-theater-list: false
+
+#Разрешить дизлайки видосам в очереди
+down_vote_enable: false
+
+#Отображать полоски босс баров с временем и названием видео текущего
+boss_bars_show_enable: true
 
 storage:
   mysql:
@@ -16,65 +23,37 @@ storage:
     use: true
 
 # Theater types:
-#   public - Allows anyone to request videos, has no theater owner
-#   private - Has a theater owner, they can lock the video queue, force skip, etc
-#   static - Has no theater owner, only plays a single video defined in this config
-#   static.url
-#   static.res-width
-#   static.res-height
+#   public - Все игроки могут запускать видео
+#   perms - Только админы или игроки с правом cinemamod.perms могут запускать видео
+#   static - Крутится одно видео 24/7, подходит для рекламы/пропаганды/стрима на твиче
+#   x y z - координата верхего угла экрана, правый/левый зависит от facing (NORTH - левый)
+#   facing - куда смотрит игрок = отразить (Если игрок смотрит в SOUTH -> то скрин NORTH)
+#   first/second location - две точки которые формируют регион, в котором будет прогружаться видео
 
-theaters:
-  theater1:
-    name: Theater 1
-    hidden: false # should the theater be shown in tab?
-    type: public
-    screen:
-      world: world
-      x: 0
-      y: 8
-      z: 0
-      facing: SOUTH
-      width: 6
-      height: 3
-      visible: true # should the screen be invisible? (for audio only theaters)
-      muted: false # should the screen always be muted?
-    preview-screens:
-      preview1:
-        world: world
-        x: 5
-        y: 8
-        z: 5
-        facing: NORTH
-  theater2:
-    name: PATRIOT THEATER (static)
-    hidden: false
-    type: static
-    screen:
-      world: world
-      x: 50
-      y: 5
-      z: 50
-      facing: SOUTH
-      width: 9
-      height: 1
-      visible: true
-      muted: true
-    static:
-      url: 'https://www.youtube.com/watch?v=w5x_9KEogM8'
-  theater3:
-    name: Theater 3 (private)
-    hidden: true
-    type: private
-    screen:
-      world: world
-      x: 100
-      y: 5
-      z: 100
-      facing: SOUTH
-      width: 1
-      height: 1
-      visible: true
-      muted: false
+#theaters:
+#  71b84249-27f5-4683-b362-97bafb38195a96051:
+#    name: testname
+#    hidden: false
+#    type: perms
+#    screen:
+#      world: world
+#      x: -7
+#      y: 73
+#      z: -36
+#      facing: SOUTH
+#      width: 8.0
+#      height: 5.0
+#      visible: true
+#      muted: false
+#    first_location:
+#      world: world
+#      x: -23
+#      y: 82
+#      z: -10
+#    second_location:
+#      x: 9
+#      y: 60
+#      z: -43
 
-# automatically makes 200x200x64 regions for testing when an existing region is not found
+# (игнорировать) automatically makes 200x200x64 regions for testing when an existing region is not found
 autogenCubicRegions: false

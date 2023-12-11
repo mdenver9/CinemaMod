@@ -10,8 +10,8 @@ public class PrivateTheater extends Theater {
     private Player owner;
     private long protectionUntil;
 
-    public PrivateTheater(CinemaModPlugin cinemaModPlugin, String id, String name, boolean hidden, Screen screen) {
-        super(cinemaModPlugin, id, name, hidden, screen);
+    public PrivateTheater(CinemaModPlugin cinemaModPlugin, String id, String name, boolean hidden, Screen screen, TheaterRegion theaterRegion) {
+        super(cinemaModPlugin, id, name, hidden, screen, theaterRegion);
     }
 
     public Player getOwner() {

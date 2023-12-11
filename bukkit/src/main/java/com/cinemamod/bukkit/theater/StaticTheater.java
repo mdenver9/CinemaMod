@@ -8,15 +8,15 @@ import com.cinemamod.bukkit.video.Video;
 public class StaticTheater extends Theater {
 
     private String url;
-    private int resWidth;
-    private int resHeight;
+    //private int resWidth;
+    //private int resHeight;
     private VideoURLParser parser;
 
-    public StaticTheater(CinemaModPlugin cinemaModPlugin, String id, String name, boolean hidden, Screen screen, String url, int resWidth, int resHeight) {
-        super(cinemaModPlugin, id, name, hidden, screen);
+    public StaticTheater(CinemaModPlugin cinemaModPlugin, String id, String name, boolean hidden, Screen screen, String url, TheaterRegion theaterRegion) {
+        super(cinemaModPlugin, id, name, hidden, screen, theaterRegion);
         this.url = url;
-        this.resWidth = resWidth;
-        this.resHeight = resHeight;
+        //this.resWidth = resWidth;
+        //this.resHeight = resHeight;
 
         parser = new VideoURLParser(cinemaModPlugin, url);
         parser.parse(null);
@@ -34,13 +34,13 @@ public class StaticTheater extends Theater {
         return url;
     }
 
-    public int getResWidth() {
+    /*public int getResWidth() {
         return resWidth;
     }
 
     public int getResHeight() {
         return resHeight;
-    }
+    }*/
 
     @Override
     public void forceSkip() {

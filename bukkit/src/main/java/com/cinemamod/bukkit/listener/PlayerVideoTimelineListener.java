@@ -29,7 +29,9 @@ public class PlayerVideoTimelineListener implements Listener {
             return;
         }
 
-        theater.showBossBars(cinemaModPlugin, player);
+        if (cinemaModPlugin.getCinemaModConfig().isBossBarsShow) {
+            theater.showBossBars(cinemaModPlugin, player);
+        }
     }
 
 }

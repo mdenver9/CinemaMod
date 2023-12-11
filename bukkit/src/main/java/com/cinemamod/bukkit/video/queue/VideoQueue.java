@@ -3,6 +3,7 @@ package com.cinemamod.bukkit.video.queue;
 import com.cinemamod.bukkit.CinemaModPlugin;
 import com.cinemamod.bukkit.buffer.PacketByteBufReimpl;
 import com.cinemamod.bukkit.event.queue.*;
+import com.cinemamod.bukkit.theater.PermsTheater;
 import com.cinemamod.bukkit.video.VideoInfo;
 import com.cinemamod.bukkit.theater.PrivateTheater;
 import com.cinemamod.bukkit.theater.Theater;
@@ -12,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.PriorityQueue;
+import java.util.logging.Level;
 
 public class VideoQueue {
 
@@ -29,10 +31,13 @@ public class VideoQueue {
     }
 
     public boolean upvoteVideo(Player voter, Video video) {
+        if (theater instanceof PermsTheater) return false;
         return addVote(voter, video, QueueVoteType.UP_VOTE);
     }
 
     public boolean downvoteVideo(Player voter, Video video) {
+        if (theater instanceof PermsTheater) return false;
+        if (!cinemaModPlugin.getCinemaModConfig().isDownVote) return false;
         return addVote(voter, video, QueueVoteType.DOWN_VOTE);
     }
 
@@ -65,16 +70,41 @@ public class VideoQueue {
 
             switch (queueResult) {
                 case QUEUE_FULL:
-                    player.sendMessage(ChatColor.RED + "This theater's queue is full.");
+                    player.sendMessage(ChatColor.RED + "Очередь заполнена.");
                     break;
                 case ALREADY_IN_QUEUE:
-                    player.sendMessage(ChatColor.RED + "This video is already in queue.");
+                    player.sendMessage(ChatColor.RED + "Это видео уже в очереди.");
                     break;
                 case QUEUE_LOCKED:
-                    player.sendMessage(ChatColor.RED + "The owner of this theater has locked the queue.");
+                    player.sendMessage(ChatColor.RED + "Владелец этой области заблокировал очередь.");
                     break;
                 case SUCCESSFUL:
-                    player.sendMessage(ChatColor.GOLD + "Queued video: " + video.getVideoInfo().getTitle());
+                    player.sendMessage(ChatColor.GOLD + "Видео в очереди: " + video.getVideoInfo().getTitle());
+                    cinemaModPlugin.getPlayerDataManager().getData(player.getUniqueId()).addHistory(videoInfo, cinemaModPlugin);
+                    break;
+            }
+        });
+    }
+
+    public void processPlayerRequestByServer(VideoInfo videoInfo, Player player) {
+        cinemaModPlugin.getVideoStorage().saveVideoInfo(videoInfo).thenRun(() -> {
+            if (!player.isOnline()) return;
+
+            Video video = new Video(videoInfo, player);
+            VideoQueueResult queueResult = queueVideo(video);
+
+            switch (queueResult) {
+                case QUEUE_FULL:
+                    cinemaModPlugin.getLogger().log(Level.WARNING,  "Очередь заполнена.");
+                    break;
+                case ALREADY_IN_QUEUE:
+                    cinemaModPlugin.getLogger().log(Level.WARNING, "Это видео уже в очереди.");
+                    break;
+                case QUEUE_LOCKED:
+                    cinemaModPlugin.getLogger().log(Level.WARNING, "Владелец этой области заблокировал очередь.");
+                    break;
+                case SUCCESSFUL:
+                    cinemaModPlugin.getLogger().log(Level.INFO, "Видео в очереди: " + video.getVideoInfo().getTitle());
                     cinemaModPlugin.getPlayerDataManager().getData(player.getUniqueId()).addHistory(videoInfo, cinemaModPlugin);
                     break;
             }
